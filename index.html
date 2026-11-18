@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#c8102e" />
+    <meta name="description" content="Prototype aplikasi kasir Alfamidi. Ringan, responsif, dan dapat digunakan secara offline." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./src/styles.css" />
+    <title>Kasir Alfamidi — Prototype</title>
+    <script src="./site-config.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar no-print">
+        <a class="brand" href="./" aria-label="Kasir Alfamidi beranda">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" role="img"><path d="M7 13h5l4.2 19.1a3 3 0 0 0 2.9 2.4h17.1a3 3 0 0 0 2.9-2.3L42 19H15"/><path d="M20 13h18M29 7v12M23 7v12"/><circle cx="21" cy="40" r="2.5"/><circle cx="35" cy="40" r="2.5"/></svg>
+          </span>
+          <span class="brand-copy"><strong>ALFAMIDI</strong><small>SISTEM INFORMASI KASIR</small></span>
+        </a>
+        <div class="topbar-actions">
+          <span class="version-tag">v<span id="app-version">1.0.0</span></span>
+          <span class="connection-pill"><i id="connection-dot"></i><span id="connection-label">Memeriksa koneksi</span></span>
+          <a class="download-button" id="apk-download" href="#download-apk" aria-label="Unduh aplikasi Android APK">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 18v2h16v-2"/></svg>
+            <span>INSTALL APK KE HP ANDA</span>
+          </a>
+        </div>
+      </header>
+
+      <main class="page-content">
+        <section class="welcome-row no-print">
+          <div>
+            <p class="eyebrow">PROTOTYPE POINT OF SALE</p>
+            <h1>Kasir <span>Alfamidi</span></h1>
+            <p class="welcome-description">Kelola barang belanja, hitung pembayaran, dan lihat bukti transaksi dalam satu aplikasi.</p>
+          </div>
+          <div class="today-chip"><span class="today-icon">▦</span><span id="today-label">—</span></div>
+        </section>
+
+        <section class="summary-grid no-print" aria-label="Ringkasan aplikasi">
+          <article class="summary-card"><span class="summary-icon products-icon">▤</span><div><strong>10</strong><span>Produk tersedia</span></div></article>
+          <article class="summary-card"><span class="summary-icon cart-icon">▣</span><div><strong id="summary-items">0</strong><span>Jenis barang di keranjang</span></div></article>
+          <article class="summary-card"><span class="summary-icon offline-icon">◉</span><div><strong>Offline ready</strong><span>Tanpa database / server</span></div></article>
+        </section>
+
+        <div class="workspace-grid">
+          <section class="panel transaction-panel no-print" aria-labelledby="transaction-title">
+            <div class="panel-heading">
+              <div><p class="eyebrow">CHECKOUT</p><h2 id="transaction-title">Transaksi Barang</h2></div>
+              <span class="step-indicator">01</span>
+            </div>
+
+            <form id="add-form" class="add-form">
+              <label class="field-group product-field" for="product-select">
+                <span>Pilih Barang</span>
+                <select id="product-select" required></select>
+              </label>
+              <label class="field-group quantity-field" for="quantity-input">
+                <span>Jumlah</span>
+                <input id="quantity-input" type="number" min="1" max="100" step="1" value="1" inputmode="numeric" required />
+              </label>
+              <button class="primary-button add-button" type="submit"><span aria-hidden="true">＋</span> Tambah Barang</button>
+            </form>
+
+            <div class="cart-heading">
+              <div><h3>Daftar Belanja</h3><span class="muted-text">Barang yang akan dibayar</span></div>
+              <span class="item-count" id="cart-count">0 item</span>
+            </div>
+
+            <div class="cart-table-wrap">
+              <table class="cart-table">
+                <thead><tr><th scope="col">Produk</th><th scope="col">Harga</th><th scope="col">Qty</th><th scope="col">Subtotal</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+                <tbody id="cart-body"></tbody>
+              </table>
+              <div id="cart-empty" class="empty-state">
+                <span class="empty-icon">▤</span><strong>Keranjang masih kosong</strong><span>Pilih barang, tentukan jumlah, lalu tekan Tambah Barang.</span>
+              </div>
+            </div>
+
+            <div class="cart-footer">
+              <span id="cart-hint">0 barang dalam transaksi</span>
+              <button id="clear-cart" class="text-button danger-text" type="button" disabled>⌫ Kosongkan transaksi</button>
+            </div>
+          </section>
+
+          <aside class="right-column">
+            <section class="panel payment-panel no-print" aria-labelledby="payment-title">
+              <div class="panel-heading">
+                <div><p class="eyebrow">PEMBAYARAN</p><h2 id="payment-title">Ringkasan & Pembayaran</h2></div>
+                <span class="step-indicator">02</span>
+              </div>
+              <div class="total-box">
+                <span>Total Belanja</span>
+                <strong id="total-amount">Rp0,00</strong>
+                <small id="total-items-label">Belum ada barang dipilih</small>
+              </div>
+              <label class="field-group payment-field" for="payment-input">
+                <span>Uang Pembayaran (Rp)</span>
+                <div class="money-input-wrap"><span>Rp</span><input id="payment-input" type="text" inputmode="numeric" autocomplete="off" placeholder="Masukkan nominal pembayaran" aria-describedby="payment-help" /></div>
+                <small id="payment-help">Masukkan angka tanpa titik atau simbol. Contoh: 100000</small>
+              </label>
+              <div class="change-row"><span>Uang Kembalian</span><strong id="change-amount">Rp0,00</strong></div>
+              <button id="pay-button" class="primary-button pay-button" type="button" disabled><span aria-hidden="true">✓</span> Proses Bayar</button>
+              <p class="payment-footnote">Pembayaran diproses secara lokal pada perangkat ini.</p>
+            </section>
+
+            <section class="panel receipt-panel" aria-labelledby="receipt-title">
+              <div class="panel-heading no-print">
+                <div><p class="eyebrow">BUKTI TRANSAKSI</p><h2 id="receipt-title">Preview Struk</h2></div>
+                <span class="step-indicator">03</span>
+              </div>
+              <div class="receipt-paper" id="receipt-paper">
+                <div class="receipt-brand">ALFAMIDI MINI MARKET</div>
+                <div class="receipt-subtitle">SISTEM KASIR SEDERHANA</div>
+                <div class="receipt-rule"></div>
+                <pre id="receipt-content" aria-live="polite">       ALFAMIDI MINI MARKET
+     SISTEM KASIR SEDERHANA
+--------------------------------
+ Silakan masukkan barang belanja
+--------------------------------
+</pre>
+                <div class="receipt-footer">Terima kasih telah berbelanja</div>
+              </div>
+              <div class="receipt-actions no-print">
+                <span id="receipt-status" class="receipt-status">Struk tersedia setelah pembayaran</span>
+              </div>
+            </section>
+          </aside>
+        </div>
+
+        <footer class="app-footer no-print">
+          <span>Kasir Alfamidi Prototype <span id="footer-version">v1.0.0</span></span>
+          <span>Data transaksi berjalan secara lokal di perangkat.</span>
+        </footer>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
